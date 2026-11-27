@@ -217,10 +217,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
    whose rounds are done lights again (a cooldown). A rebooting machine has vented as
-   its shield dropped, so it carries nothing to burn, and no rule spares it. One out of reach
-   (Phased, Swallowed) neither burns nor overheats, its heat staying for the turn it is back: a Phased
-   machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
-   waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
+   its shield dropped, so it carries nothing to burn, and no rule spares it. A Swallowed
+   machine neither burns nor overheats, its heat staying for the turn it is back, and
+   everything it carries waits; a Phased machine burns and ticks as any other, what it carries
+   being its own. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below). It starts with every foe's Armoured, Barrier and Ward going, its
    Brittle halving and its Exposed losing a stack; each foe's own turn then
    ends with its ticks and its Golden losing a stack, its action done or lost.
@@ -255,7 +255,7 @@ landed, lost to a stun or skipped.
 What works in the other side's turn ends as its own turn starts, and what works in its own
 turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
 one, and a chip always shows what the next blows will meet. On a Phased machine every clock
-runs and nothing damages it; on a Swallowed one none runs but the swallow's.
+runs and what it carries acts on it; on a Swallowed one none runs but the swallow's.
 Exposed, Golden and Swallowed are timers: their stacks are the turns or rounds they have left,
 counted down where they decay, gone at none, and never their strength (Golden 3 hits no harder
 than Golden 1). A timer laid where it counts down lands after that count, so its number is
@@ -613,7 +613,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the machine's, no rule of the piece's, no rider, no heat; no armour, Brittle or Barrier reads it,
   it does not use or consume a Shock, it spreads nowhere and cashes no Cryo, and a rule that counts
   hits or the foes a spend damaged does not count it (the Honey Badger's Ore, the Mole's Momentum).
-  A Phased foe loses none. A kill by it is still its machine's (the kill rules read it). It stacks
+  A Phased foe loses none unless the machine that fired is Phased too. A kill by it is still its machine's (the kill rules read it). It stacks
   with an area: a conductor Spread or Penetrate reaches takes the area's blow, with its riders, and
   loses the HP besides.
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
@@ -701,7 +701,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
-  before it acts, and a machine it leaves at nothing is wrecked; a Phased machine pays none;
+  before it acts, and a machine it leaves at nothing is wrecked, a Phased machine as any other;
   the Umbra Inducer, the Oblation Mantle and the Entropy Condenser cost 3) and a **shield cost** (3 shield, taken
   first from the shield as it stands). An entry whose shield cost the
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
@@ -865,31 +865,40 @@ On a machine:
   It stays until the shield breaks, whatever breaks it, a reboot's drop included, and then every
   stack goes. A grant stops at the most its machine holds: 3, and 4 and then 5 in the Storm
   Petrel's Defence branch. A Purge takes stacks as any buff's.
-- **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
-  it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
-  a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
-  that waits and still stands is Phased through the next round's end; one wrecked first never
-  phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
-  machine, a blow or a special at every machine passes it by, and no ally may spend on it but
-  one Phased too: a Phased unit may target another Phased unit on its own side.
-  Everything it carries ticks as ever, and nothing damages it: its Ablate takes no point and
-  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, its
-  Regenerating pays, so a round Phased waits a debuff out. It spends
-  its die on a foe or on itself, and it may reboot, bare where nothing reaches it. Its own
-  heat does not burn it either: what it carries past its maximum stays, more if it fires
-  again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
-  its own entry is damage and is blocked with the rest: a hull cost (Volatile), a passive's
-  hull price on a spend and a corrupted entry's bite take nothing. Its Lure turns no pick. A second grant while it stands carries it through the round after.
+- **Phased** (buff): cannot be targeted, damaged or affected in any way by a unit that is not
+  Phased, until the end of the round, and it acts. Granted as the round ends: a source lays
+  the wait for it (Phasing, a buff, a chip on a dashed edge), on a machine that has acted or
+  not, and as the enemy's turn ends every machine that waits and still stands is Phased
+  through the next round's end; one wrecked first never phases, and a foe's Purge takes the
+  wait as any buff. While it stands, only what is Phased reaches it. No foe that is not Phased
+  picks the machine, such a foe's blow or special at every machine passes it by, and so does a
+  fall's curse on its killer. No ally spends on it, and no grant over the squad lands on it,
+  unless its source is Phased too; a second grant while it stands carries it through the round
+  after only from itself or from a Phased ally. A Phased foe reaches it as it reaches any
+  machine: picks it, hits it, purges it, and its blow at every machine lands on it. What it
+  carries is its own and acts on it in full: its Ablate takes its points, its Scorched and
+  Sapped act, its Regenerating pays, and every clock runs. Its own heat burns it as ever, and
+  a bite of its own entry lands: a hull cost (Volatile), a passive's hull price on a spend, a
+  corrupted entry's. It spends its die on any foe, Phased or not, on itself, or on a Phased
+  ally, and it may reboot. Its Lure turns the pick of a foe that can reach it and no other.
+  A status is its carrier's whoever laid it, so what was on its way lands: a swallow already
+  taken closes on it as the round ends, though no foe that is not Phased starts one. A hold on
+  the field (Essence Flare) holds nothing on a unit its holder cannot reach. Under the trial
+  that grants it at once, only the foes that can no longer reach it pick again.
   On a foe (the Spectre's and the Wraith's, a step after their Hex Bolt, or a move of a foe's
   own): the wait is laid as the move lands and the foe fades as that round ends, if it still
-  stands, so the round its move is announced is the window. Through the next round it is out
-  of the team's reach as an Aloft foe is, no die dropped on it and nothing aimed elsewhere
-  reaching it, and nothing damages it: what it carries ticks and takes no point, and a Mine on
-  it does it no harm. It acts all the same, and it is back as that round ends. Its own side
-  reaches it only from a foe Phased too, as a machine's allies do: a rally, a brace, a Ward, a
-  priming, a mend, a cleanse, a revive or a merge from one not Phased passes it by. Two guards: the last foe standing does not fade, so a fight has a foe
-  to end on, and a foe Phased already gains no wait, so none is out two rounds running, and
-  its intent wears Phased's mark only on a round the fade would land.
+  stands, so the round its move is announced is the window. Through the next round only a
+  Phased machine reaches it: no other machine's die is dropped on it, and nothing such a
+  machine aims elsewhere reaches it, an area, a bounce, a Chain's arc, a lay on the foe in
+  front (which passes to the next foe it reaches), a needle struck back, or the blast of a
+  Mine or the burst of a web on a foe that is not Phased. What it carries is its own and acts
+  on it in full: a Mine or a web on it, whose blast and burst reach what the foe itself
+  reaches, a needle's bolt, and the drill's mark with its blow. It
+  acts all the same, on every machine, Phased or not, and it is back as that round ends. Its
+  own side reaches it no more than ours reaches a Phased machine: a rally's Empowered or a
+  mend passes it by unless its source is Phased. Two guards: the last foe standing does not
+  fade, so a fight has a foe to end on, and a foe Phased already gains no wait, so none is out
+  two rounds running, and its intent wears Phased's mark only on a round the fade would land.
 - **Swallowed** (debuff, from a foe's swallow): the swallow lands as the round it is taken
   in ends, after that round's count, the machine in the fight and hittable until then (its
   chip the wait, the count to come); then Swallowed at the swallow's rounds, a stack going as
@@ -1058,8 +1067,8 @@ On a machine:
   untouched. As that round opens every foe's targeted move turns on it, whatever the move's
   word, in the order they strike, until the blows already drawn would wreck it; from there the
   rest pick as they would. A move at every machine or at none is unmoved, a countdown's pick
-  carried from the round before holds, and a machine out of reach as the round opens (Phased)
-  draws nothing. Everything after is as ever: a Lure pulls a blow off it, and a foe that picks
+  carried from the round before holds, and a Phased machine draws the moves of the foes that
+  reach it, the Phased ones, and no others. Everything after is as ever: a Lure pulls a blow off it, and a foe that picks
   again mid-round takes the next machine in line. Renewed to its count, never added. Cleansable: a
   Cleanse gives the armour back and leaves the intents where they turned.
 - **A foe's purge** is Purge N, the rule ours runs: N stacks off every buff the machine carries,
@@ -1305,7 +1314,8 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   foe's cleanse takes it; it passes a Ward). No Momentum is spent by the firing. As the foes'
   turn starts, before their side's opening, each foe carrying it gains Brittle 1 and Pinned,
   then takes a plain blow of 1 (its Brittle adds, its armour and a Barrier from its last turn
-  take it, no Shock is read, and a Phased foe takes nothing), then drains 5 of its Mole's
+  take it, no Shock is read, and a Phased foe takes it as any, the mark being a status it
+  carries), then drains 5 of its Mole's
   Momentum; at none the mark goes and the drill comes home. Before the opening, so the Pinned it
   lays holds the Brittle the opening would halve: its Brittle climbs a point a turn. Every use
   that hits the drilled foe, an area's hit included (Chain's ping is no hit), gives its Mole a Momentum
@@ -1440,7 +1450,8 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   still gathering count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
   machine leaving the fight (Swallowed), or by a Disrupt whose foe finds its machine
   gone or out of the fight; a machine Phased as the round ended is out of the picks the next
-  round opens with, a countdown's carried pick drawn again; a foe whose machine has fallen or is out of the fight when it acts
+  round opens with for every foe that is not Phased, such a foe's carried pick drawn again and
+  a Phased foe's holding; a foe whose machine has fallen or is out of the fight when it acts
   strikes the next machine in line, left to right, that stands in the fight, whatever its move's word,
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays

@@ -405,6 +405,43 @@ func test_the_bot_prices_the_shield_its_heat_stands_up_and_what_its_lure_lays_on
 	charge.self_statuses = [{"status": "charged", "stacks": 2}]
 	assert_true(bot.self_grant_worth(sk, ms, charge, sk.front[0]) > 0.0, "Charged on its next fires")
 	assert_eq(bot.self_grant_worth(sk, ms, Face.attack(0, I, [K.LURE]), sk.front[0]), 0.0, "a lure with no grant is worth none of it")
+	# An entry that lays a status on its own machine and carries no Lure is priced too (the
+	# Macaque's Aile Booster on its Valkyrie steps: the bot threw on it, its grant's worth lost).
+	var plain := Face.attack(0, I)
+	plain.self_statuses = [{"status": "charged", "stacks": 2}]
+	assert_eq(bot.self_grant_worth(sk, ms, plain, sk.front[0]), bot.self_grant_worth(sk, ms, charge, sk.front[0]), "Charged is worth the same with no Lure on the entry")
+	var guard := Face.attack(0, I)
+	guard.self_statuses = [{"status": "hardened", "stacks": 1, "per_foe": true}]
+	for foe in sk.field_foes():
+		foe.target = null
+	assert_eq(bot.self_grant_worth(sk, ms, guard, sk.front[0]), 0.0, "Hardened with no Lure and no foe aiming at it stands against nothing")
+	sk.front[0].target = ms
+	assert_true(bot.self_grant_worth(sk, ms, guard, sk.front[0]) > 0.0, "and against the foe that aims at it")
+	assert_true(bot.self_grant_worth(sk, ms, guard, sk.front[0]) <= bot.self_grant_worth(sk, ms, lure, sk.front[0]), "never more than the same grant on a lure, which draws the rest on")
+
+
+## A grant priced as a buff, any status with no price of its own in the bot (Empowered, Armoured,
+## Overcharged: the Macaque's Aile Booster on its Valkyrie steps), laid by the entry the die
+## shows. The buff's price reads that entry's blow and the blow reads the grant, so the bot once
+## asked itself its worth without end; before that a mistyped list threw on every such entry
+## with no Lure and hid it. It answers now: the grant is priced, the entry is worth more with it
+## than without, and the bot is out of the pricing once it has answered.
+func test_the_bot_prices_a_grant_laid_by_the_entry_the_die_shows_and_never_asks_forever() -> void:
+	var bare := Face.attack(6, I)
+	var boosted := Face.attack(6, I)
+	boosted.self_statuses = [{"status": "overcharged", "stacks": 1}]   # Empowered, by its engine id
+	var u := _mech("Lancer", Die.single(boosted))
+	var sk := _fight([u], [_foe(300), _foe(300)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	ms.assigned = false
+	var bot := Policy.make(Policy.GREEDY, 1)
+	var target: Foe = sk.targets_for_face(ms, boosted)[0]
+	var with_grant := bot.self_grant_worth(sk, ms, boosted, target)
+	assert_true(with_grant > 0.0, "Empowered laid on its own machine by the entry the die shows is priced (%s)" % str(with_grant))
+	assert_true(bot.attack_score(sk, ms, boosted, target) > bot.attack_score(sk, ms, bare, target), "and the entry is worth more for it")
+	assert_eq(bot._pricing_grant, 0, "the bot is out of the pricing once it has answered")
+	assert_eq(bot.self_grant_worth(sk, ms, bare, target), 0.0, "an entry that lays nothing is worth none of it")
 
 
 func test_the_bot_holds_rerolls_for_an_action_worth_its_price_and_buys_it() -> void:

@@ -209,6 +209,30 @@ func test_the_mark_lays_brittle_and_a_pin_then_a_blow_then_drains_and_goes_home_
 	assert_false(Effects.has(u, "drill_out"), "and the drill comes home")
 
 
+## The drill's mark is a status its foe carries, so it works on a Phased foe as on any (Ryan, 19
+## November: "Phased: Cannot be targeted, damaged, or affected in any way by non-phased units";
+## what a unit carries is its own): its Brittle and its pin, then its blow. What passes between
+## the drill and its machine is the machine's own drill's, whichever of the two is Phased: the
+## Momentum drained, the homecoming at none.
+func test_the_mark_works_on_a_phased_foe_as_on_any() -> void:
+	var u := _mole()
+	var foe := _dummy(100)
+	var sk := _fight([u], [foe, _dummy(100)])
+	_dig(sk, 2)
+	sk.assign(0, foe)
+	var hp := foe.hp
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)   # Phased this round and the next, its drill in it
+	assert_false(sk.targets_for(0).has(foe), "the Mole, not Phased, has no die to drop on it")
+	sk.end_round()
+	assert_eq(foe.hp, hp - 2, "Phased, the mark's Brittle 1 and the blow of 1 it adds to land on it all the same")
+	assert_eq(Effects.stacks_of(foe, "brittled"), 1, "its Pinned holding the Brittle")
+	assert_eq(Effects.stacks_of(u, "momentum"), 5, "and its machine's 5 Momentum drained")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(foe.hp, hp - 5, "the second turn: Brittle 2, a blow of 3")
+	assert_false(Effects.has(foe, "applied_momentum") or Effects.has(u, "drill_out"), "drained to none, the mark goes and the drill comes home from the Phased foe")
+
+
 func test_a_use_that_hits_the_drilled_foe_gives_the_mole_a_momentum_area_hits_included() -> void:
 	var u := _mole()
 	var g := _gunner()

@@ -286,3 +286,41 @@ func test_chain_strikes_a_needled_target_too() -> void:
 	assert_true(sk.assign(0, a), "the Chain gun at the needled foe")
 	assert_eq(a.hp, 30 - 3 - 2, "the strike, then the arc")
 	assert_eq(b.hp, 30, "and nothing on a foe that conducts nothing")
+
+
+## The needles and Phased's rule (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"). The needles are a status their foe carries, so
+## the bolt they bring is that foe's: from a foe that is not Phased it passes a Phased conductor
+## by, and from a Phased foe it pings every conductor. A Phased machine's needles are needles
+## still, its rule firing the bolt. And what a machine lays on its striker is the machine's to
+## land: a Phased striker takes no needle from a machine that is not Phased.
+func test_a_needles_bolt_is_its_foes_and_a_phased_striker_takes_a_phased_machines_needle_alone() -> void:
+	for faded in [false, true]:
+		var u := _mech(Die.single(Face.attack(1, I)))
+		var a := _foe()
+		var plain := _foe()
+		var ghost := _foe()
+		var sk := _fight([u], [a, plain, ghost])
+		Effects.grant_for_rounds(u, Effects.STATUS["phased"], "test", sk.round)
+		Effects.grant_for_rounds(ghost, Effects.STATUS["phased"], "test", sk.round)
+		if faded:
+			Effects.grant_for_rounds(a, Effects.STATUS["phased"], "test", sk.round)
+		_needle(a, 2)
+		_needle(plain, 1)
+		_needle(ghost, 1)
+		var who := "a Phased foe" if faded else "a foe that is not Phased"
+		var bolt := Policy.new().bolt_worth(sk, sk.mechs[0], Effects.needle_rule(u), a, a.hp)
+		assert_true(is_equal_approx(bolt, 6.0 if faded else 4.0), "the bot prices the bolt of %s on the conductors it reaches (%s)" % [who, bolt])
+		assert_true(sk.assign(0, a), "a Phased machine lays the third needle")
+		assert_eq(Effects.stacks_of(a, NEEDLE), 0, "and its rule fires the bolt: its needles are needles still")
+		assert_eq([a.hp, plain.hp, ghost.hp], [30 - 1 - 2, 28, 28 if faded else 30], "the bolt of %s: itself, the conductor that is not Phased, and the Phased one" % who)
+	for faded in [false, true]:
+		var u := _mech(Die.single(Face.blank()))
+		var striker := _foe(30, 3)
+		var sk := _fight([u], [striker])
+		Effects.grant_for_rounds(striker, Effects.STATUS["phased"], "test", sk.round)
+		if faded:
+			Effects.grant_for_rounds(u, Effects.STATUS["phased"], "test", sk.round)
+		sk.end_round()
+		assert_eq(u.shield, 7, "the Phased foe's blow lands on the machine, Phased or not")
+		assert_eq(Effects.stacks_of(striker, NEEDLE), 1 if faded else 0, "and it takes the needle of a struck machine only where that machine is Phased too")

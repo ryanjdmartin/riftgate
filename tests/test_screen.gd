@@ -20,6 +20,15 @@ func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	return screen
 
 
+## The arrows the screen draws from one foe's intent, counted by where they start.
+func _arrows_from(s: SkirmishScreen, foe: Foe) -> int:
+	var fv := s._foe_view_for(foe)
+	if fv == null:
+		return 0
+	var from: Vector2 = s._arrows.get_global_transform().affine_inverse() * fv.intent_anchor_global()
+	return s._arrows.arrows.filter(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)).size()
+
+
 ## Jenny's heat lines (Ryan, 10 November: "The heat warning shouldn't fire every time, not
 ## anymore ... we only need to warn: -Every time we're overheating -The first time we reach over
 ## the warning threshold, but not again until we've got back under"): the warning once as a
@@ -526,8 +535,9 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "aloft")
 	s._refresh()
 	assert_false(view.away, "back on the ground, it is drawn whole again")
-	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
-	# stands, under the chip a Phased machine wears.
+	# A Phased foe (17 November) is drawn the same, where it stands, under the chip a Phased
+	# machine wears, while it is out of reach: of every machine that is not Phased, so with no
+	# die in hand, and with the die of such a machine in hand.
 	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
 	s._refresh()
 	assert_true(view.away, "Phased, it is drawn as what no die reaches")
@@ -535,7 +545,60 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
 	assert_eq(faded.size(), 1, "it wears Phased's chip")
 	for i in range(sk.mechs.size()):
-		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+		assert_false(sk.targets_for(i).has(foe), "no die of a machine that is not Phased may be dropped on it")
+	# Only a Phased machine reaches it (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+	# affected in any way by non-phased units"): its die in hand shows the foe whole and a
+	# target, and takes the drop; another machine's shows it out of reach and no target. The
+	# screen asks the fight, never a rule of its own.
+	for i in range(2):
+		var dm: Skirmish.MechState = sk.mechs[i]
+		dm.die = Die.single(Face.attack(3, Face.Reach.INDIRECT))
+		dm.face_index = 0
+		dm.assigned = false
+	Effects.grant_for_rounds(sk.mechs[0].unit, Effects.STATUS["phased"], "test", sk.round)
+	s._drag_from = 0
+	s._refresh(false)
+	assert_true(sk.targets_for(0).has(foe), "the fight lets a Phased machine's die drop on it")
+	assert_false(view.away, "so with that die in hand it is drawn whole")
+	assert_true(view.highlight, "and lit as a target")
+	assert_true(sk.can_assign(0, foe), "the drop is taken")
+	s._drag_from = 1
+	s._refresh(false)
+	assert_true(view.away and not view.highlight, "the die of a machine that is not Phased in hand: out of reach, and no target")
+	assert_false(sk.can_assign(1, foe), "and the drop is refused")
+	# A Phased ally is a drop target for a Phased machine's support entry alone.
+	for i in range(2):
+		sk.mechs[i].die = Die.single(Face.shield(3))
+		sk.mechs[i].face_index = 0
+	Effects.grant_for_rounds(sk.mechs[2].unit, Effects.STATUS["phased"], "test", sk.round)
+	s._drag_from = 0
+	s._refresh(false)
+	assert_true(s._mech_views[2].highlight, "a Phased machine's shield in hand lights the Phased ally")
+	s._drag_from = 1
+	s._refresh(false)
+	assert_false(s._mech_views[2].highlight, "the shield of a machine that is not Phased does not")
+	assert_true(s._mech_views[0].highlight == false and s._mech_views[1].highlight, "it lights itself, and not the other Phased machine")
+	# A blow at every machine draws its arrow to each machine its foe reaches.
+	s._drag_from = -1
+	s.show_all_arrows = true
+	var held_action: Dictionary = foe.action
+	var other: Foe = sk.field_foes()[1]
+	var held_other: Dictionary = other.action
+	var storm := {"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}
+	foe.action = storm
+	other.action = storm
+	s._refresh(false)
+	s._refresh_arrows()
+	var live := sk.live_mechs().size()
+	var unphased := sk.live_mechs().filter(func(m) -> bool: return not Skirmish.is_phased(m)).size()
+	assert_eq(_arrows_from(s, foe), live, "a Phased foe's storm draws an arrow to every machine, Phased or not")
+	assert_eq(_arrows_from(s, other), unphased, "and a storm from a foe that is not Phased none to a Phased machine")
+	foe.action = held_action
+	other.action = held_other
+	s.show_all_arrows = false
+	for i in [0, 2]:
+		Effects.remove(sk.mechs[i].unit, "phased")
+	s._refresh(false)
 	# A blow that fades its foe wears Phased's mark on its intent, and never on a round the
 	# fade would lay nothing: the foe is Phased already, and none is out two rounds running.
 	var bolt := {"kind": "attack", "value": 3, "name": "Test Bolt", "also": [{"effect": "phase"}]}

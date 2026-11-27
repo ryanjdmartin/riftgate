@@ -5,11 +5,11 @@ extends TestCase
 ## start, its turn's end, the round's end, and when it is spent. A machine's turn starts as the
 ## round opens and ends at END TURN; a foe's starts as the foes' turn opens and ends as its own
 ## action does. Empowered halves as its turn ends ("Empowered should decay at the end of turn,
-## clearly, not end of round"). A Phased machine is damaged by nothing and everything it carries
-## ticks ("Everything ticks during phased. It doesn't take damage but it's a way of waiting out a
-## debuff"), a bite of its own entry blocked with the rest ("I think we block the damage as a
-## feature"). A Swallowed machine is out of play and everything it carries waits ("Swallowed
-## it's out of play so everything should pause"): the rounds it sat out never came for it.
+## clearly, not end of round"). What a Phased machine carries is its own and acts on it in full,
+## as on any machine (19 November: "Phased: Cannot be targeted, damaged, or affected in any way
+## by non-phased units"): its ticks, its heat and what its own entry costs it. A Swallowed
+## machine is out of play and everything it carries waits ("Swallowed it's out of play so
+## everything should pause"): the rounds it sat out never came for it.
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
@@ -90,61 +90,79 @@ func test_a_buff_that_halves_and_a_debuff_that_halves_keep_their_own_ends() -> v
 	assert_false(Effects.has(u, "overcharged"), "two to one to none")
 
 
-# ---------------------------------------------------------------- Phased: everything ticks
+# ---------------------------------------------------------------- Phased: what it carries is its own
 
-func test_everything_a_phased_machine_carries_ticks_and_nothing_damages_it() -> void:
+## A machine that pays hull for every component it spends, as a passive's price would be.
+const TITHE := {"id": "tithe", "name": "Tithe", "description": "", "effects": [
+	{"trigger": "static", "effect": "hull_per_spend", "value": 2}]}
+
+
+## Everything a Phased machine carries acts on it exactly as on a machine that is not Phased,
+## beside it in the same fight with the same statuses, the same heat and the same entry: its
+## Ablating takes its points and fades, its Scorched heats its weapon and goes, its Empowered and
+## its Brittle halve, its Regenerating pays, its heat burns and overheats it, and its own entry's
+## costs land, a Volatile's hull, a passive's hull price and a corrupted entry's bite.
+func test_what_a_phased_machine_carries_acts_on_it_as_on_any_machine() -> void:
 	var sk := Skirmish.new(1)
-	var fist := Face.attack(30, L)
-	fist.volatile = 10
-	var u := _mech("A", Die.single(fist), 10, 100)
-	u.shield_max = 20
-	sk.add_mech(u)
-	sk.add_mech(_mech("B", Die.single(Face.blank())))
-	var g := Foe.make("revenant", 900, 5)
+	var units: Array[Unit] = []
+	for name in ["P", "Q"]:
+		var fist := Face.attack(30, L)
+		fist.volatile = 10
+		var u := _mech(name, Die.single(fist), 10, 100)
+		u.shield_max = 20
+		u.grant_passive(TITHE)
+		sk.add_mech(u)
+		units.append(u)
+	var g := Foe.make("post", 900, 5)
+	g.actions = [{"id": "brace", "name": "Brace", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": ""}]
+	g.action = g.actions[0]   # it strikes nobody: what the two machines lose is their own doing
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	var ms: Skirmish.MechState = sk.mechs[0]
-	Effects.grant_for_rounds(u, Effects.STATUS["phased"], "test", sk.round + 1)   # Phased this round and the next
-	_lay(u, "ablating_mech", 3)
-	_lay(u, "scorched", 2)
-	_lay(u, "overcharged", 4)
-	_lay(u, "brittled_mech", 4)
-	Effects.stack(u, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
-	Effects.corrupt_entry(u, 0, "foe:x", 2)
-	ms.heat = ms.heat_max + 5
-	# A bite of its own entry is damage, and nothing damages it.
-	assert_eq([sk.pending_volatile(ms), sk.pending_bite(ms)], [0, 0], "no Volatile bite and no corrupted entry's while it is Phased")
-	assert_eq(Policy.volatile_cost(sk, ms, fist), 0.0, "and the bot counts none")
-	assert_true(sk.assign(0, g), "it acts")
-	assert_eq([u.shield, u.hull], [10, 100], "and the spend cost it nothing")
-	assert_true(g.hp < 900, "the weapon did its work")
-	var hot := ms.heat
+	var p: Skirmish.MechState = sk.mechs[0]
+	var q: Skirmish.MechState = sk.mechs[1]
+	Effects.grant_for_rounds(units[0], Effects.STATUS["phased"], "test", sk.round + 1)   # Phased this round and the next
+	for u in units:
+		_lay(u, "ablating_mech", 3)
+		_lay(u, "scorched", 2)
+		_lay(u, "sapped", 1)
+		_lay(u, "overcharged", 4)
+		_lay(u, "brittled_mech", 4)
+		Effects.stack(u, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
+		Effects.corrupt_entry(u, 0, "foe:x", 2)
+	p.heat = p.heat_max + 5
+	q.heat = q.heat_max + 5
+	assert_true(Skirmish.is_phased(p) and not Skirmish.is_phased(q), "P is Phased and Q is not")
+	# Its own entry's costs: the Volatile's hull and the passive's price, and the corrupted entry's bite.
+	var bite := 2 * Skirmish.corrupt_bite()
+	assert_eq([sk.pending_volatile(p), sk.pending_bite(p)], [10 + 2, bite], "a Phased machine's spend costs what it says: its Volatile's hull, its passive's price and its corrupted entry's bite")
+	assert_eq([sk.pending_volatile(p), sk.pending_bite(p)], [sk.pending_volatile(q), sk.pending_bite(q)], "as the machine beside it pays")
+	assert_true(is_equal_approx(Policy.volatile_cost(sk, p, p.face()), Policy.volatile_cost(sk, q, q.face())) and Policy.volatile_cost(sk, p, p.face()) > 0.0, "and the bot counts it on both alike")
+	assert_true(sk.assign(0, g) and sk.assign(1, g), "both fire")
+	assert_eq([units[0].shield, units[0].hull], [maxi(0, 10 - bite), 100 - 12 - maxi(0, bite - 10)], "the bite off the shield and the hull cost off the hull, Phased or not")
+	assert_eq(_carried(sk, 0, 0), _carried(sk, 1, 0), "spent alike, they stand alike")
+	assert_true(p.heat > p.heat_max + 5, "its Scorched heated its weapon")
+	var before := _carried(sk, 0, 0)
 	sk.end_round()
-	assert_eq([u.shield, u.hull], [12, 100], "END TURN: its Ablating takes no point and its heat burns nothing, and its Regenerating pays its two")
-	assert_eq(Effects.stacks_of(u, "ablating_mech"), 2, "a stack fades all the same: Phased waits a debuff out")
-	assert_eq(Effects.stacks_of(u, "regenerating"), 1, "and one of its Regenerating, paid")
-	assert_false(Effects.has(u, "scorched"), "its Scorched goes with the turn")
-	assert_eq(Effects.stacks_of(u, "overcharged"), 2, "its Empowered halves as its turn ends")
-	assert_eq(Effects.stacks_of(u, "brittled_mech"), 4, "its Brittle waits for its turn's start")
-	assert_eq(ms.heat, hot, "the heat stays where it stood")
+	assert_eq(_carried(sk, 0, 0), _carried(sk, 1, 0), "END TURN reads the two alike")
+	assert_eq(Effects.stacks_of(units[0], "ablating_mech"), 2, "its Ablating took its points and a stack faded")
+	assert_true(sk.ablations.any(func(a) -> bool: return int(a["mech"]) == 0 and int(a["points"]) == 3), "three points, on record for the replay")
+	assert_false(Effects.has(units[0], "scorched") or Effects.has(units[0], "sapped"), "its Scorched and its Sapped go with the turn")
+	assert_eq(Effects.stacks_of(units[0], "overcharged"), 2, "its Empowered halves as its turn ends")
+	assert_eq(Effects.stacks_of(units[0], "regenerating"), 1, "its Regenerating paid, and a stack faded")
+	assert_true(sk.overheats.any(func(o) -> bool: return int(o["mech"]) == 0 and bool(o["first"])), "and its heat burnt it: its overheat, Phased or not")
+	assert_true(p.shield_broken and units[0].hull < int(before[10]), "the overheat broke its shield and took hull")
 	sk.start_round()
-	assert_true(Skirmish.is_phased(ms), "Phased still as the next round opens")
-	assert_eq(Effects.stacks_of(u, "brittled_mech"), 2, "and its Brittle halves there, Phased or not")
+	assert_true(Skirmish.is_phased(p), "Phased still as the next round opens")
+	assert_eq(Effects.stacks_of(units[0], "brittled_mech"), 2, "its Brittle halves as its turn starts")
+	assert_eq(_carried(sk, 0, 0), _carried(sk, 1, 0), "the round opens on the two alike")
+	var hull := units[0].hull
 	sk.end_round()
-	assert_eq([Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "regenerating")], [1, 1, 0], "a second round of the same: each a step down")
-	assert_eq([u.shield, u.hull], [13, 100], "the last point of Regenerating, and no damage taken")
-	# Back in reach: the stack left takes its point, and the heat it carried burns.
+	assert_eq(_carried(sk, 0, 0), _carried(sk, 1, 0), "a second turn of the same")
+	assert_eq(hull - units[0].hull, 2 + (p.heat - p.heat_max) * Skirmish.overheat_scale, "its Ablating's two on the bare hull, and every point past its maximum burning again")
 	sk.start_round()
-	assert_eq(Effects.stacks_of(u, "brittled_mech"), 1, "its Brittle a step down again as its turn starts")
-	assert_false(Skirmish.is_out(ms), "back in reach")
-	g.target = sk.mechs[1]
-	assert_eq(sk.pending_volatile(ms), 10, "and its spend costs what it says again")
-	var over := ms.heat - ms.heat_max
-	assert_true(over > 0, "it carried its heat past the maximum through both rounds")
-	sk.end_round()
-	assert_false(Effects.has(u, "ablating_mech"), "the last stack ticked and went")
-	assert_eq(u.hull, 100 - over * Skirmish.overheat_scale, "the turn it is back, the heat past its maximum burns")
+	assert_false(Skirmish.is_phased(p), "Phased no longer")
+	assert_eq(_carried(sk, 0, 0), _carried(sk, 1, 0), "and nothing was waited out: it stands where the machine beside it stands")
 
 
 # ---------------------------------------------------------------- Swallowed: everything waits
@@ -337,6 +355,41 @@ func test_a_swallowed_machines_hold_on_the_field_waits_with_it() -> void:
 	assert_eq(Effects.stacks_of(ally, "overcharged"), 2, "the ally's halved at END TURN, its holder still out")
 	assert_eq(Effects.stacks_of(g, "kindled"), 2, "and the foe's as its own turn ended, the holder still out: it is let go as the round ends, after both")
 	assert_false(Effects.has(holder, "essence_flare"), "and the buff ends with the round its machine is back for")
+
+
+## The hold is its holder's to land on each unit it holds for, so it holds nothing on a Phased
+## unit its holder cannot reach (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"): a Phased machine's and a Phased foe's Empowered
+## halve as ever under a holder that is not Phased, and are held by a Phased holder as any.
+func test_a_hold_on_the_field_passes_a_phased_unit_by_unless_its_holder_is_phased() -> void:
+	for faded in [false, true]:
+		var sk := Skirmish.new(1)
+		var holder := _mech("A", Die.single(Face.blank()))
+		var ally := _mech("B", Die.single(Face.blank()))
+		var ghost_ally := _mech("C", Die.single(Face.blank()))
+		sk.add_mech(holder)
+		sk.add_mech(ally)
+		sk.add_mech(ghost_ally)
+		var g := Foe.make("revenant", 900, 0)
+		var ghost := Foe.make("revenant", 900, 0)
+		sk.add_foes([g, ghost])
+		sk.begin()
+		sk.start_round()
+		Effects.grant_for_rounds(holder, Effects.STATUS["essence_flare"], "test", sk.round)
+		Effects.grant_for_rounds(ghost_ally, Effects.STATUS["phased"], "test", sk.round)
+		Effects.grant_for_rounds(ghost, Effects.STATUS["phased"], "test", sk.round)
+		if faded:
+			Effects.grant_for_rounds(holder, Effects.STATUS["phased"], "test", sk.round)
+		assert_eq([sk.field_holds(sk.mechs[1]).has("overcharged"), sk.field_holds(g).has("kindled")], [true, true], "the hold stands for the units its holder reaches")
+		assert_eq([sk.field_holds(sk.mechs[2]).has("overcharged"), sk.field_holds(ghost).has("kindled")], [faded, faded], "and for a Phased unit only where its holder is Phased too")
+		for u in [ally, ghost_ally]:
+			_lay(u, "overcharged", 8)
+		for f in [g, ghost]:
+			_lay(f, "kindled", 8)
+		sk.end_round()
+		assert_eq([Effects.stacks_of(ally, "overcharged"), Effects.stacks_of(g, "kindled")], [8, 8], "held whole on both sides, as ever")
+		var kept := 8 if faded else 4
+		assert_eq([Effects.stacks_of(ghost_ally, "overcharged"), Effects.stacks_of(ghost, "kindled")], [kept, kept], "the Phased machine's and the Phased foe's are held by a Phased holder alone")
 
 
 # ---------------------------------------------------------------- the four places

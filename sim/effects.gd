@@ -256,24 +256,25 @@ const STATUS := {
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
 	# passive's muster rule), spent by its locked pieces' charged forms; never decays, and a
 	# store is a resource, so no Purge touches it (Ryan, 21 October).
-	# Phased (Ryan's mark, 15 November: "New effect: "Cannot be damaged or targeted by anything
-	# until the end of this round." We remove the awkward act clause, but still ensure that it
-	# cannot be buffed or interacted with by allies until it unphases"; "all sources of Phased
-	# should say "at the end of this round, grant Phased.""): out of reach of both sides for a
-	# round, the machine acting all the same. What a source lays is the wait for it (phasing),
-	# on a machine that must stand through the foes' turn first ("you have to survive the
-	# current round"); the skirmish lands it as that turn ends (_land_phases). Until then it
-	# could not act, take damage or be targeted until the round's end, and was granted at once,
-	# only to a machine that had not acted.
+	# Phased (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or affected in any way by
+	# non-phased units"; 15 November: "all sources of Phased should say "at the end of this
+	# round, grant Phased.""), on a machine or a foe: only a Phased unit reaches it, whichever
+	# side it stands on, and it reaches everybody (reaches, the one question every path asks).
+	# What it carries is its own and acts on it in full, its heat and its own entry's costs
+	# among it. It carries no effect of its own: the skirmish reads the status. What a source
+	# lays is the wait for it (phasing), on a unit that must stand through the round first
+	# ("you have to survive the current round"); the skirmish lands it as the round ends
+	# (Skirmish._land_phases).
 	"muster": {"id": "muster", "name": "Muster", "description": "A charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	"phased": {"id": "phased", "name": "Phased", "description": "Cannot be damaged or targeted by anything until the end of this round.", "stacking": "renew",
+	"phased": {"id": "phased", "name": "Phased", "description": "Cannot be targeted, damaged, or affected in any way by non-phased units.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	"phasing": {"id": "phasing", "name": "Phasing", "description": "At the end of this round, gains Phased, if it still stands.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
-	# Swallowed (a foe's swallow, Floraison's, 30 October): out of reach as a Phased machine is,
-	# laid by a foe and timed by its move, ended early by its swallower's fall; out of play too,
-	# so everything it carries pauses where a Phased machine's ticks (Skirmish.paused, 16 November).
+	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight, which nothing
+	# reaches, laid by a foe and timed by its move, ended early by its swallower's fall; out of
+	# play too, so everything it carries pauses where a Phased machine's acts on it
+	# (Skirmish.paused, 16 November).
 	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted, and everything it carries waits, until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew", "decay": "round_end", "timer": true,
 		"tags": ["debuff"], "effects": []},
 	# The swallow on its way (Ryan, 22 November: "Round end, swallow it?"): the machine stays in
@@ -678,6 +679,22 @@ static func turns_mark(u, id: String) -> bool:
 	return TEAM_MARKS.has(id) and has(u, "ward")
 
 
+## Phased's rule, the one question (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"): can `by` reach `whom`, a machine's Unit or a foe
+## each, on either side? Yes when `whom` is not Phased, when `by` is Phased too, or when they
+## are one unit, which always reaches itself. An effect's source is the unit that lands it now,
+## so what a status does is its carrier's (the readings he confirmed, 27 November): a Phased
+## unit's own statuses reach it, and a Mine or a web on a foe reaches what that foe reaches.
+## Nothing in a fight is without a unit as its source; asked with none, a Phased unit is out of
+## its reach.
+## Skirmish.reaches asks it of a machine in the fight; every list of whom a spend or a move
+## lands on is read through it.
+static func reaches(by, whom) -> bool:
+	if whom == null:
+		return false
+	return by == whom or not has(whom, "phased") or (by != null and has(by, "phased"))
+
+
 ## The armour one stack of Armoured adds (its add_stat): one, since 18 October.
 static func braced_armour() -> int:
 	for eff in STATUS["braced"]["effects"]:
@@ -1052,14 +1069,10 @@ static func decays_to_zero(def: Dictionary) -> bool:
 ## A machine's turn ends (END TURN): its turn statuses tick, Ablating's points for the caller to
 ## take before the overheat, then every stack that fades a turn loses one (Ablating,
 ## Regenerating, whose regrowth the caller reads first: regrowth), Scorched and Sapped go whole,
-## and the empty ones go. `spared`: nothing damages the machine (Phased), so its Ablating takes
-## no point, and fades a stack all the same (Ryan, 16 November: "Everything ticks during
-## phased. It doesn't take damage but it's a way of waiting out a debuff"). A Swallowed machine
-## is never asked: everything on it pauses.
-static func turn_tick(u, spared: bool = false) -> Dictionary:
+## and the empty ones go. A Phased machine's tick as any other's: what it carries is its own.
+## A Swallowed machine is never asked: everything on it pauses.
+static func turn_tick(u) -> Dictionary:
 	var out := tick_preview(u, true)
-	if spared:
-		out["hp"] = 0   # nothing damages it (Phased): its stacks tick and fade all the same
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_TURN_ALL or m.decay == DECAY_AFTER_TURN:
