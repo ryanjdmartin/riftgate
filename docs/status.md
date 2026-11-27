@@ -578,6 +578,8 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
+  The file is at v0.683, one edit ahead of the page: his word on a lay on the foe in front
+  ("Keep 8 as built"), and section 12's two Phased readings still the session's.
   Published at v0.682 on 27 November from this file (the page's Version 533: his two rulings
   of that day in the Phased row, a needle's bolt the Echidna's and a swallow following the
   form of the grant), onto v0.681 (Version 532, from `ebe3ac92`, checked against the live

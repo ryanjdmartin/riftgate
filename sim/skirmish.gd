@@ -2273,7 +2273,9 @@ func mech_column(ms: MechState) -> int:
 ## does, searching left-right-left-right"): its column's front rank, then its back; else the next
 ## column left, then right, then two left, two right. Null with no foe standing. `by` is the
 ## machine whose entry asks: a Phased foe it cannot reach is passed over as if it stood nowhere
-## (reaches), and the search goes on; unsaid, as a machine that is not Phased reads it.
+## (reaches), and the search goes on, so the lay lands on the next foe and is never lost (his to
+## keep, Ryan, 27 November, of this reading, the eighth of that day's list: "Keep 8 as built");
+## unsaid, as a machine that is not Phased reads it.
 func foe_in_front(ms: MechState, by = null) -> Foe:
 	var c := mech_column(ms)
 	var order: Array[int] = [c]
