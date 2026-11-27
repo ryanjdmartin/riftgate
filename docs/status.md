@@ -578,13 +578,11 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  The file is at v0.682, one edit ahead of the page: his two rulings of 27 November in the
-  Phased row (a needle's bolt is the Echidna's; a swallow follows the form of the grant).
-  Published at v0.681 on 27 November from this file (the page's Version 532: Phased by source,
-  its row, its tip and section 12's item, and the Cassowary's capacitor cells), merged onto
-  v0.679 (Version 531, 26 November, from `52ec9147`, checked against the live page byte for
-  byte first; a publish not built on the live version is refused, so the merge's base is the
-  live page's own file). Before republishing,
+  Published at v0.682 on 27 November from this file (the page's Version 533: his two rulings
+  of that day in the Phased row, a needle's bolt the Echidna's and a swallow following the
+  form of the grant), onto v0.681 (Version 532, from `ebe3ac92`, checked against the live
+  page byte for byte first; a publish not built on the live version is refused, so a merge's
+  base is the live page's own file). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   the commit of the last publish unless the live page says otherwise, OURS this branch's file, THEIRS the saved
