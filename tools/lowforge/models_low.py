@@ -3840,8 +3840,11 @@ def cottonmouth(b):
                 b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8)
                 _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "steel.dark", "muzzle", phase=math.pi / 8)
             _cottonmouth_prisms(b, [("y", (RR * math.cos(a), ym - 1.8, ZA + RR * math.sin(a)), RB - 0.95, 0.4, 8, math.pi / 8) for a in angles], "bore.dark", "bore_floor")
-            b.prism("y", 0.0, (y0 + ym) / 2.0, ZA, 2.3, ym - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
-            b.prism("y", 0.0, ym, ZA, 3.0, 1.4, "steel.plate", 8, "spindle_cap", phase=math.pi / 8)
+            # The spindle ends at the front collar under a small hub, so only the barrels' mouths stand
+            # out in front (Ryan, 27 November: run out to the mouths, its cap read as a sixth barrel).
+            yf = y1 + 1.6 + 1.1   # the front collar's face
+            b.prism("y", 0.0, (y0 + yf) / 2.0, ZA, 2.3, yf - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
+            b.prism("y", 0.0, yf + 0.4, ZA, 1.6, 0.8, "steel.plate", 8, "spindle_cap", phase=math.pi / 8)
             for yc in (y0 + 3.6, y1 + 1.6):
                 b.prism("y", 0.0, yc, ZA, RR + RB + 0.5, 2.2, "steel.plate", 12, "collar", phase=math.pi / 12)
         # The shot's light, fixed at the top chamber on the elevation (never the rolling drum):
