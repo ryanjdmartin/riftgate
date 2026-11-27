@@ -3178,7 +3178,7 @@ def cassowary(b):
     with two copper coils, on its axle in straps off the cab under a lit spark gap; its cells
     light one a stack of Sustained Recoil, charging toward the hit its Syntropy Cylinder
     doubles, and they flare and go dark as that hit discharges it (b.count, the machine's
-    `sustained_recoil`, five of six lit when the next hit doubles); it spins while the machine is
+    `sustained_recoil`, a cell lit ahead for the hit to come, so all six when the next doubles); it spins while the machine is
     Spun Up, the status its Negentropy Spinner grants
     (b.spin_held). The feet are the AT-ST's, broad and flat in iron: a heel block on the shank,
     three hinged toe plates on the ball, so the toes stay flat as the heel lifts. Mounts in the
@@ -3281,8 +3281,9 @@ def cassowary(b):
     # two end plates, wound with two copper coils, on an axle in straps off the cab, a spark gap
     # lit over its rear on an arm off the cab, two horns and the spark between them. Each cell's
     # lens in either end plate and its window down its outside light, a cell a stack of Sustained
-    # Recoil, cell_1 at the top first and the rest clockwise seen from behind; the hit its Syntropy
-    # Cylinder doubles discharges them, all six flaring and going dark (b.count).
+    # Recoil and one for the hit to come, cell_1 at the top first and the rest clockwise seen from
+    # behind, so all six are lit when its Syntropy Cylinder doubles the next hit; that hit
+    # discharges them, all six flaring and going dark (b.count).
     # The bank spins while the machine is Spun Up (b.spin_held).
     DX, DY, DZ, DR = 23.5, 0.5, 72.0, 8.5
     Y0, Y1 = DY - 7.5, DY + 7.5
@@ -3316,7 +3317,7 @@ def cassowary(b):
             strip = lambda y: [tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2), tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2),
                                tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25), tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25)]
             _rings(b, [strip(Y0 + 0.9 - DY), strip(Y1 - 0.9 - DY)], "amber.spark", label)
-    b.count("sustained_recoil", cells, on=6.0, off=-1.0, flare=14.0)   # a cell lit a stack of Sustained Recoil, five lit when the next hit doubles (Ryan, 26 November); hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
+    b.count("sustained_recoil", cells, on=6.0, off=-1.0, flare=14.0, ahead=1)   # a cell lit a stack of Sustained Recoil and one for the hit to come, all six lit when the next hit doubles (Ryan, 26 November: "either only 5, or that it has +1 to the current count"); hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
     b.spin_held("spun_up", "capacitor", 600.0)
     waist.__exit__(None, None, None)
 
