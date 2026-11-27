@@ -6051,8 +6051,7 @@ func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
 ## fells strikes no more: _strike). The bolt is the Echidna's, since it fires it (Ryan, 27
 ## November, of whose it is while a unit is Phased: "worded in the Echidna passive as "the
 ## echidna fires" so that should be the source"): from a Phased Echidna it pings every conductor,
-## and from one that is not it passes the Phased ones by, whatever the foe it fires in. With two
-## in a squad the rule is the first's (needler_of), and so is the bolt.
+## and from one that is not it passes the Phased ones by, whatever the foe it fires in.
 func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
 	var sid := str(rule["status"])
 	var chain := int(rule.get("chain", 0))
