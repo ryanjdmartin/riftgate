@@ -3729,8 +3729,9 @@ def cottonmouth(b):
     (the passive, no entry on the die) on trunnions in a yoke on a ring, elevating to lob (joint
     elev_drum) and turning on its own axis (joint drum, always turning slowly, b.spin): a
     riveted breech casing banded in the livery, a window in the band over each chamber, its back
-    a face of six chamber caps round a hub, each lamp banked; six fat barrels out of its front
-    through two collars to bored muzzles. Its turn reads from the barrels alone (Ryan, 2
+    a face of chamber caps round a hub, each lamp banked; fat barrels out of its front through
+    two collars to bored muzzles, five since 27 November, a chamber for each entry on its die, the
+    Integrated Volatile Gas Canister's among them (six until then). Its turn reads from the barrels alone (Ryan, 2
     November: "How on earth does six rotating barrels look still?"), so no barrel is marked.
     The third round (Ryan, 2 November: "Keep the idle turn ... Quickly spin it forward a fixed
     number of barrels when it fires ... only ever light the top barrel mouth"; of the back's lit
@@ -3752,6 +3753,8 @@ def cottonmouth(b):
     the Halo Shield, hp_4 bare (the Coolant Jacket takes no mount). Floats: the skirt at z = 5.
     The look, the rig, the acts and the gait are Ryan's to judge running."""
     DECK = 15.0
+    BARRELS = 5                  # the drum's barrels, a chamber each
+    CHAMBER = 360.0 / BARRELS    # the drum's turn from one chamber to the next, in degrees
     # The skirt: a rubber bag under the hull the whole way round, bulging past it, rising with
     # the bow's rake; its rounded ends in plan from sections that narrow fore and aft.
     SKIRT = [(-37.0, 6.6, 10.6, 30.0, 2.0), (-35.6, 5.6, 11.0, 40.0, 2.4), (-33.0, 5.0, 11.4, 45.0, 2.6), (21.0, 5.0, 11.4, 45.0, 2.6),
@@ -3808,7 +3811,9 @@ def cottonmouth(b):
 
     # The drum: elevating in the yoke, turning on its own axis inside it.
     RR, RB = 7.6, 3.7            # the barrels' ring radius and each barrel's
-    angles = [math.pi / 2.0 + k * math.pi / 3.0 for k in range(6)]   # a barrel on top at rest, and at every step of 60 degrees
+    # Five barrels, a chamber for each entry on its die (27 November, Ryan: "4 and an integrated.
+    # So the model will need to be changed to have 5 barrels"; six until then).
+    angles = [math.pi / 2.0 + k * math.radians(CHAMBER) for k in range(BARRELS)]   # a barrel on top at rest, and at every step of a chamber
     y0, y1, ym = PY + 10.0, PY + 21.0, PY + 27.5   # the barrels from the casing's face, the muzzles, their mouths
     yb, cr = PY - 7.0, 6.6                         # the drum's back and its chambers' circle there
     with b.joint("elev_drum", (0.0, PY, ZA), axis="pitch", limits=(0.0, 30.0)):
@@ -3823,7 +3828,7 @@ def cottonmouth(b):
             # so the spin reads as a light running round it.
             _cottonmouth_boxes(b, [((RC * 0.97 * math.cos(a), PY + 2.5, ZA + RC * 0.97 * math.sin(a)), ((-math.sin(a), 0.0, math.cos(a)), (0.0, 1.0, 0.0), (math.cos(a), 0.0, math.sin(a))), (1.6, 1.3, 0.5))
                                    for a in angles], "amber.heat", "chamber_window")
-            # Its back: a hub and six chamber caps, every lamp banked, burning with the strip (Ryan,
+            # Its back: a hub and a chamber cap a barrel, every lamp banked, burning with the strip (Ryan,
             # 2 November: the lit index lamp went, "that's part of the flash").
             b.prism("y", 0.0, yb - 0.6, ZA, 3.0, 1.2, "steel.dark", 8, "drum_hub", phase=math.pi / 8)
             _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.3, ZA + cr * math.sin(a)), 2.3, 0.6, 8, math.pi / 8) for a in angles], "steel.plate", "chamber_cap")
@@ -3909,7 +3914,7 @@ def cottonmouth(b):
         body's (dx, dy, dz, yaw, pitch, roll) held through it. Returns the keys by track."""
         dx, dy, dz, yaw, pitch, roll = pose
         out_key = lambda t, d: (t, 0.0, 0.0, 0.0, 0.0, d, 0.0)
-        return {"drum": [(t0, turned), (t0 + 0.36, turned + chambers * 60.0)],
+        return {"drum": [(t0, turned), (t0 + 0.36, turned + chambers * CHAMBER)],
                 "elev_drum": [(t0 + 0.58, at), (t0 + 0.64, at + 4.0), (t0 + 1.06, at)],
                 "top_mouth": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, MOUTH_IN), out_key(t0 + 1.0, MOUTH_IN), out_key(t0 + 1.08, 0.0)],
                 "top_lamp": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, -LAMP_OUT), out_key(t0 + 1.0, -LAMP_OUT), out_key(t0 + 1.08, 0.0)],
@@ -3940,7 +3945,7 @@ def cottonmouth(b):
             body += [(3.85, 0.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
         elif n > 2:   # round to the row's next foe
             body += [(SHOTS[n - 1][0] + SLICE + 0.03, 0.0, 0.0, 0.0, SHOTS[n - 1][2], 0.0, 0.0), (t0 - 0.05, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
-        k = shot(t0, CHAMBERS * 60.0 * n, at, (0.0, 0.0, 0.0, yaw, 0.0, 0.0))   # each shot opens where the last one parked, so the drum stands still through its flash
+        k = shot(t0, CHAMBERS * CHAMBER * n, at, (0.0, 0.0, 0.0, yaw, 0.0, 0.0))   # each shot opens where the last one parked, so the drum stands still through its flash
         for jn in ("elev_drum", "drum", "top_mouth", "top_lamp"):
             tracks[jn] += k[jn]
         body += k["body"]
@@ -3948,7 +3953,7 @@ def cottonmouth(b):
         flash += k["flash"]
     end = SHOTS[-1][0] + SLICE
     tracks["elev_drum"] += [(end + 0.05, 6.0), (end + 0.8, 0.0)]
-    tracks["drum"] += [(end + 1.0, CHAMBERS * 60.0 * len(SHOTS))]   # held: whole chambers on, where the idle turn takes up again
+    tracks["drum"] += [(end + 1.0, CHAMBERS * CHAMBER * len(SHOTS))]   # held: whole chambers on, where the idle turn takes up again
     body += [(end + 0.05, 0.0, 0.0, 0.0, SHOTS[-1][2], 0.0, 0.0), (end + 0.8, 0.0, 0.0, 0.0)]
     # The rudders lay each yaw, held a beat before they come back.
     lay = lambda t, deg: [(t, 0.0), (t + 0.15, deg), (t + 0.28, deg), (t + 0.45, 0.0)]   # done before the next shot's slice opens
@@ -3965,10 +3970,13 @@ def cottonmouth(b):
     fire_end = FIRE_AT + SLICE + 0.3
     b.act("drum_fire", fire_end, {
         "elev_drum": [(0.0, 0.0), (FIRE_AT, FIRE_LIFT)] + k["elev_drum"] + [(FIRE_AT + SLICE, FIRE_LIFT), (fire_end, 0.0)],
-        "drum": k["drum"] + [(fire_end, 120.0)],
+        "drum": k["drum"] + [(fire_end, 2.0 * CHAMBER)],
         "top_mouth": k["top_mouth"], "top_lamp": k["top_lamp"],
     }, body=k["body"], heft=0.08, locks=["drum"], glow=[(STRIP, k["strip"]), (FLASH, k["flash"])], idle=False)
     b.hidden_fire = ("drum_fire", 0.0, fire_end, FIRE_AT + 0.58)   # the blow at the shot's flash
+    # Its Integrated Volatile Gas Canister (27 November) has no mount: the drum fires it as any of
+    # its guns, with the same slice.
+    b.fires = {"volatile_gas_canister": ("drum_fire", 0.0, fire_end, FIRE_AT + 0.58)}
     # Coming about: the rudders go hard over and the hull swings round on its cushion to its
     # left, tipping out as it turns, the searchlight sweeping the water as it holds; then hard
     # over the other way and back round to its station, settling with a heave.
@@ -3996,7 +4004,7 @@ def cottonmouth(b):
     b.gait(steer={r: -16.0 for r in rudders}, body_hold=(0.0, 0.0, 0.6, 0.0, 2.5, 0.0), glow={"parts": ["fan_ring"], "k": 0.7 * HEAT}, rock=3.0)
     b.spin("fan_l", 360.0, 1260.0)
     b.spin("fan_r", -360.0, -1260.0)
-    b.spin("drum", 36.0, step=60.0)   # a chamber a step: an act that turns it on parks it on one (the ranging, the spin-up)
+    b.spin("drum", 36.0, step=CHAMBER)   # a chamber a step: an act that turns it on parks it on one (the ranging, the spin-up)
     b.move(slide=0.35, bank=0.0, accel=0.7, heft=0.13, oversteer=1.3)
     # Its death: the cushion gone, it settles flat onto the ground, slewed with a slight list, the drum
     # down and the rudders knocked askew, the sensor swung round.

@@ -531,7 +531,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
    since 20 November; the Cassowary's redesign built 26 November; the Cottonmouth's
-   Integrated Volatile Gas Canister built 27 November, its model's five barrels and its branches next;
+   Integrated Volatile Gas Canister and its model's five barrels built 27 November, its branches next;
    the Skua's round with Ryan; the Clydesdale's two picks), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
