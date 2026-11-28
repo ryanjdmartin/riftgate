@@ -3538,7 +3538,10 @@ func _expose_mech(f: Foe, t: MechState, said: String = "") -> void:
 
 
 ## The machine that stands Exposed and `by` can pick (targetable_mechs), or null: one at a time
-## is the foes' rule of announcing (legal_actions), so the first is the one.
+## is the foes' rule of announcing (legal_actions), so the first is the one. So an Exposed
+## machine that is Phased too draws the Phased foes' moves and no others (his to keep, Ryan, 28
+## November, of this reading, the twelfth of the list of the 27th: "Yes those 9 and 10 are
+## correct", the ten a slip for it, as he confirmed when asked).
 func exposed_mech(by = null) -> MechState:
 	for ms in targetable_mechs(by):
 		if Effects.has(ms.unit, "exposure_mech"):
@@ -6071,7 +6074,8 @@ func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
 ## (the echidna's needle, Ryan, 20 November: "getting struck by one, grants that foe a stack"),
 ## told and gained as a spend's riders are. A wreck the hit made gains and lays nothing. What
 ## it lays, it lands on its striker, so a machine that is not Phased lays nothing on a Phased
-## one (reaches); what it gains is its own.
+## one (reaches; his to keep, Ryan, 28 November, of this reading, the ninth of the list of the
+## 27th: "Yes those 9 and 10 are correct"); what it gains is its own.
 func _struck_by(ms: MechState, f: Foe) -> void:
 	if not ms.alive() or is_swallowed(ms):
 		return
