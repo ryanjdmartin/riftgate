@@ -344,8 +344,7 @@
     "effects": [
      {
       "trigger": "on_foe_status",
-      "effect": "paradox",
-      "value": 5
+      "effect": "paradox"
      }
     ]
    },
@@ -613,9 +612,7 @@
      {
       "trigger": "static",
       "effect": "needles",
-      "status": "sonic_needle",
-      "at": 3,
-      "chain": 2
+      "status": "sonic_needle"
      }
     ]
    },
@@ -1151,15 +1148,13 @@
       "trigger": "on_skirmish_start",
       "effect": "stack_status",
       "value": "overcharged",
-      "per_stack": "essence",
-      "stack_step": 5
+      "per_stack": "essence"
      },
      {
       "trigger": "on_round_kill",
       "effect": "stack_status",
       "value": "overcharged",
-      "per_stack": "essence",
-      "stack_step": 5
+      "per_stack": "essence"
      }
     ]
    },

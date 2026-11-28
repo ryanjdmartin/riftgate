@@ -134,8 +134,7 @@ Cannot be used without Ore. | implemented |
   Resolve: Consumed. | implemented |
 | **Numbed** | When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1. | implemented |
-| **Paradox** | When another Debuff is applied: Gain 1 stack per stack applied.
-At 5 or more stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
+| **Paradox** | At 5 or more stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
 | **Shocked** | Hit By Weapon: If targeted, consume to double damage received, before applying defensive effects.
 Conducts Chain. | implemented |
 | **Pinned** | When Brittle would be reduced: Consumed to prevent it.
@@ -185,8 +184,7 @@ Cannot reduce HP below 1. | implemented |
   Resolve: Hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.
 Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
-| **Essence** | When any Sprite is defeated: Gain 1 Essence.
-Skirmish Start: Gain 1 Empowered per 5 Essence.
+| **Essence** | Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If {self} killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle. | implemented |
 | **Offhand** | Uses on a Sprite Gain:
@@ -234,7 +232,6 @@ Cannot be cleansed. | implemented |
 Turn Start: Consumed to restore Shield to max and remove Broken. | implemented |
 | **Enraged** | Attacks Gain:
   Hit: +1 damage dealt per stack ({N}).
-When you use a component that is not a weapon: Gain 1 stack.
 Lasts the skirmish. | implemented |
 | **Golden** | Attacks Gain:
   Hit: +2 damage dealt.
@@ -279,8 +276,7 @@ Resolve: If hit, the Mole gains 1 Momentum. | implemented |
 | **Frozen** | When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any. | implemented |
 | **Drill Out** | Removed when Applied Momentum returns to the Mole.
 On Burrowed: Removed. | implemented |
-| **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
-Conducts Chain.
+| **Sonic Needle** | Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 
 ## Formation

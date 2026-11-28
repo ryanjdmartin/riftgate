@@ -1806,7 +1806,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 		assert_true(str(mine[0][2]).begins_with("Ability, Sealed"), "its hold line names it an Ability")
 	assert_true(s._mech_views[0].statuses.any(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "ability"), "and the machine's view draws it on its tile")
 	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "the Nob's rage is its ability")
-	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Enraged +1"), "which says what goes on")
+	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Gain 1 Enraged"), "which says what goes on, Enraged's growth on what grants it (27 November)")
 	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Buff, Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
 	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
 	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Gargantuan King's")

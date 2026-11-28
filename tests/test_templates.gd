@@ -8,7 +8,7 @@ extends TestCase
 ## the values the code gives, in the form its count picks. Synthetic templates where the rule is
 ## the filling's, never an entry's words.
 
-const PREFIXES := ["rule", "entry", "readout", "target", "kind", "gate", "rank", "cost", "hold", "state", "move", "aim", "when", "foe_target", "term", "count", "self"]
+const PREFIXES := ["rule", "entry", "readout", "target", "kind", "gate", "rank", "cost", "hold", "state", "move", "aim", "when", "foe_target", "term", "count", "self", "ability"]
 
 
 ## Every template id written out in the engine's and the screens' code.
