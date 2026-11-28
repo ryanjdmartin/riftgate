@@ -142,7 +142,10 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
-	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.",
+	# Its count is its own (Ryan, 27 November, his A: a payoff stays on its status, its number with
+	# it; the standard's rule 24), where it was the Baboon's passive's value: at `count` stacks every
+	# stack goes and it is Suppressed. The Baboon's Pocket Paradox lays the stacks (rule 37).
+	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.", "count": 5,
 		"effects": []},
 	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
 	# current hull a stack as its turn ends, past armour, after Ablating's flat tick, rounded down
@@ -406,7 +409,9 @@ const STATUS := {
 	# while it stands (tagged conducts, as Shocked is), and at its rule's count the bolt
 	# (Skirmish._needle_bolt). Its text and, with the Spiker's sap, Sapped's two effects come from
 	# the rule that lays it (needle_spec); it lasts until a bolt spends it.
-	"sonic_needle": {"id": "sonic_needle", "name": "Sonic Needle", "description": "Conducts Chain. At its count of stacks, its machine fires Chain on every conductor, then the stacks go.", "decay": "none",
+	# Its count and its bolt's Chain are its own (27 November, his A), where they were the Echidna's
+	# passive's: at `at` stacks the Echidna fires Chain `chain` (the bolt the Echidna's, 27 November).
+	"sonic_needle": {"id": "sonic_needle", "name": "Sonic Needle", "description": "Conducts Chain. At its count of stacks, its machine fires Chain on every conductor, then the stacks go.", "decay": "none", "at": 3, "chain": 2,
 		"tags": ["conducts"], "effects": []},
 	# The drill in its foe, and its branches' forms (Ryan, 24 November): a mark that never stacks,
 	# laid as the Inertia Drill resolves. As its foe's turn starts it lays its `tick`'s statuses
@@ -545,7 +550,7 @@ const STATUS := {
 	# Its flares read it (stack_status's `per_stack` and `stack_step`) and its Quintessence Tap spends it
 	# (Face.spends).
 	# Essence is its name since 15 November (Ryan: "Rename souls to Essence"; Souls until then).
-	"essence": {"id": "essence", "name": "Essence", "description": "1 for every foe that has fallen in its fights this battle. Its flares grant Empowered by the Essence it holds, and its Quintessence Tap consumes it.", "decay": "none", "scope": "battle", "counted": true,
+	"essence": {"id": "essence", "name": "Essence", "description": "1 for every foe that has fallen in its fights this battle. Its flares grant Empowered by the Essence it holds, and its Quintessence Tap consumes it.", "decay": "none", "scope": "battle", "counted": true, "step": 5,
 		"tags": ["ability"], "effects": []},
 	# The Quintessence Tap's hold (Ryan, 12 November: "No Empowered decays this round. And I mean
 	# none, not ally or enemy"), a buff on the machine that spent it since 15 November ("This is
@@ -2025,7 +2030,10 @@ static func needle_rule(u) -> Dictionary:
 		out["sap"] = int(out["sap"]) + int(eff.get("sap", 0))
 	if not STATUS.has(str(out.get("status", ""))):
 		return {}
-	out["at"] = maxi(1, int(out["at"]))
+	# The count and the bolt's Chain are the needle status's own (27 November, his A).
+	var own: Dictionary = STATUS[str(out["status"])]
+	out["at"] = maxi(1, int(own.get("at", out["at"])))
+	out["chain"] = int(own.get("chain", out["chain"]))
 	return out
 
 
@@ -2323,20 +2331,16 @@ static func carries_status(f, which: String = "") -> bool:
 
 ## The Paradox meter a machine runs (the Baboon's Pocket Paradox, a meter since 10 October,
 ## Ryan): [stacks of Paradox a foe gains each time it gains another status, the count that
-## knocks it out], or [0, 0] for none. Several effects add their stacks; the lowest count trips.
+## knocks it out], or [0, 0] for none. Several effects add their stacks; the count is Paradox's
+## own (its status's `count`, 27 November: a status's numbers are its own).
 static func paradox(u) -> Array[int]:
 	var adds := 0
-	var at := 0
 	for pair in _taking_part(u, "on_foe_status", null):
-		if str(pair[0].get("effect", "")) != "paradox":
-			continue
-		adds += int(pair[1].stacks)
-		var t := int(pair[0].get("value", 0))
-		if t > 0 and (at == 0 or t < at):
-			at = t
-	if at <= 0:
+		if str(pair[0].get("effect", "")) == "paradox":
+			adds += int(pair[1].stacks)
+	if adds <= 0:
 		return [0, 0] as Array[int]
-	return [adds, at] as Array[int]
+	return [adds, maxi(1, int(STATUS["paradox"].get("count", 5)))] as Array[int]   # the count is Paradox's own (27 November)
 
 
 ## Stacks a status this machine applies gains from its passives (add_stacks on on_stack;
@@ -2541,7 +2545,15 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 ## stacks a step takes, one when it says none): how many whole steps of the status the machine
 ## carries. The Ammit's flare is a stack of Empowered a step of five Essence.
 static func stack_steps(u, eff: Dictionary) -> int:
-	return int(stacks_of(u, str(eff.get("per_stack", ""))) / maxi(1, int(eff.get("stack_step", 1))))
+	return int(stacks_of(u, str(eff.get("per_stack", ""))) / step_of(eff))
+
+
+## The step an effect scaled by a status counts it in: the status's own `step` where it has one
+## (Essence's five, 27 November: a status's numbers are its own), else the effect's `stack_step`,
+## else 1.
+static func step_of(eff: Dictionary) -> int:
+	var own = STATUS.get(str(eff.get("per_stack", "")), {}).get("step", null)
+	return maxi(1, int(own) if own != null else int(eff.get("stack_step", 1)))
 
 
 ## What this machine's passives would grant it of `status_id` on `trigger` as it stands, a count
@@ -3622,7 +3634,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"corrupt_bite": body = "bites its owner %s a stack when its entry is spent" % vs
 		"cool_hitter": body = "a weapon's hit on it cools the hitter %s heat a stack" % vs
 		"paradox":
-			body = "a foe gains a Paradox stack for every stack of another debuff it gains; at %s or more every stack is consumed and it is Suppressed" % vs
+			body = "a foe gains a Paradox stack for every stack of another debuff it gains; at %d or more every stack is consumed and it is Suppressed" % int(STATUS["paradox"].get("count", 5))   # Paradox's own count (27 November)
 		"add_stacks":
 			body = "every stack this machine applies is %s deeper" % vs
 			if int(eff.get("per_heat", 0)) > 0:
@@ -3630,7 +3642,7 @@ static func effect_text(eff: Dictionary) -> String:
 		_: body = str(eff.get("effect", ""))
 	if eff.has("per_stack"):
 		var of := str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
-		var step := maxi(1, int(eff.get("stack_step", 1)))
+		var step := step_of(eff)
 		body += (" per stack of %s" % of) if step == 1 else (" for every %d %s it holds" % [step, of])
 	if eff.has("per_target"):
 		body += " per stack of %s on the foe" % str(STATUS.get(str(eff["per_target"]), {}).get("name", str(eff["per_target"])))

@@ -2340,6 +2340,17 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# A meter's numbers are its status's own (Ryan, 27 November, his A: a payoff stays on its
+		# status and its number with it; the standard's rule 24): Paradox's count, a needle's count
+		# and its bolt's Chain, Essence's step. A passive lays the stacks and names no number of theirs.
+		if effect == "paradox" and eff.has("value"):
+			errs.append("%s: paradox takes no value since 27 November: the count is Paradox's own (Effects.STATUS)" % where)
+		if effect == "needles":
+			for k in ["at", "chain"]:
+				if eff.has(k):
+					errs.append("%s: needles takes no %s since 27 November: the number is its needle status's own (Effects.STATUS)" % [where, k])
+		if eff.has("per_stack") and eff.has("stack_step") and (Effects.STATUS.get(str(eff["per_stack"]), {}) as Dictionary).has("step"):
+			errs.append("%s: per_stack %s takes no stack_step: the step is the status's own (Effects.STATUS)" % [where, str(eff["per_stack"])])
 		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
 		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below). Its
 		# numbers are the statuses' own (Ryan, 24 November: "Move the effects on the mole's passive to
@@ -2511,8 +2522,6 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
 		if effect == "seal_form" and (eff.has("value") or eff.has("heat")):
 			errs.append("%s: seal_form says no numbers: Sealed's are its own (23 November)" % where)
-		if effect == "paradox" and int(eff.get("value", 0)) < 1:
-			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword" and eff.has("printed"):
 			errs.append("%s: 'printed' is gone; a rule written out is its own effect (spillover), never a keyword granted" % where)
 		if effect == "grant_keyword":

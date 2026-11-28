@@ -2188,7 +2188,7 @@
     "table": {
      "kind": "buff",
      "on": "foe",
-     "stacks": "Yes: the foe's rage a non-weapon spend",
+     "stacks": "Yes: its rage for each equipment any Frame uses",
      "lasts": "The fight; a Purge lowers the stacks, and the rage, the Nob's Ability, goes on"
     }
    }

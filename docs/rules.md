@@ -1112,9 +1112,10 @@ On a foe:
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
-- **Paradox** (debuff, while the Baboon fights): a stack for every stack of another debuff the
-  foe gains, a debuff that never stacks one (Shocked, Exposed, a Suppress, a pin), a buff none;
-  at five or more every stack is consumed and it is Suppressed
+- **Paradox** (debuff, while the Baboon fights): the Baboon lays it, its Pocket Paradox the
+  source, a stack for every stack of another debuff the foe gains, a debuff that never stacks one
+  (Shocked, Exposed, a Suppress, a pin), a buff none; at Paradox's own count, five or more, every
+  stack is consumed and it is Suppressed
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
   already suppressed gains nothing), the stacks spent either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.

@@ -388,3 +388,14 @@ func test_no_status_grows_itself() -> void:
 				found.append("%s: %s" % [id, line])
 	assert_eq(found, [] as Array[String], "every status's stacks come from what lays them")
 
+
+## A payoff's number is its status's own (Ryan, 27 November, his A: the payoff stays on the status
+## and its number moves onto it; the standard's rule 24): Paradox's count, a Sonic Needle's count
+## and its bolt's Chain, Essence's step, each the one its tip says, so neither moves alone.
+func test_a_payoffs_number_is_its_statuss_own() -> void:
+	var db := ContentDB.load_default()
+	var tip := func(id: String) -> String: return str(db.vocabulary[id].get("codex", ""))
+	assert_true(tip.call("paradox").contains("At %d or more stacks" % int(Effects.STATUS["paradox"]["count"])), "Paradox's count: %s" % tip.call("paradox"))
+	assert_true(tip.call("sonic_needle").contains("At %d or more stacks: Chain %d fires" % [int(Effects.STATUS["sonic_needle"]["at"]), int(Effects.STATUS["sonic_needle"]["chain"])]), "the needle's count and Chain: %s" % tip.call("sonic_needle"))
+	assert_eq(tip.call("essence").count("per %d Essence" % int(Effects.STATUS["essence"]["step"])), 2, "Essence's step, on both its flares: %s" % tip.call("essence"))
+

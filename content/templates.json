@@ -127,7 +127,7 @@
   {"id": "move.swarm", "text": "(+{n} a kin standing)", "fills": ["n"]},
   {"id": "move.per_kill", "text": "(+{n} a foe the team has killed)", "fills": ["n"]},
   {"id": "move.target", "text": "Target: {whom}", "fills": ["whom"]},
-  {"id": "ability.enrage", "text": "Ability, Enrage: When you use a component that is not a weapon: Gain {n} Enraged.", "fills": ["n"]},
+  {"id": "ability.enrage", "text": "Ability, Enrage: When any Frame uses equipment: Gain {n} Enraged.", "fills": ["n"]},
   {"id": "self.frame", "text": "the {name}", "fills": ["name"]},
   {"id": "self.sprite", "text": "this Sprite", "fills": []},
   {"id": "self.none", "text": "this Frame", "fills": []},

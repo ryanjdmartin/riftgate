@@ -2856,10 +2856,13 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 
 ## The Pocket Paradox as a meter (Ryan, 10 October): a foe gains Paradox for each other status
 ## it gains, once a spend however many strikes or stacks; at the count it is Suppressed and
-## the Paradox clears. Paradox is a status, never decays, and never feeds itself.
+## the Paradox clears. Paradox is a status, never decays, and never feeds itself. Its count is
+## Paradox's own (27 November: a status's numbers are its own), read here.
 func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
+	var count := int(Effects.STATUS["paradox"]["count"])
+	assert_true(count > 4, "the test's spends lay four stacks short of the count")
 	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "paradox", "value": 6}]}
+		{"trigger": "on_foe_status", "effect": "paradox"}]}
 	var sk := Skirmish.new(1)
 	var gun := Face.attack(5, L, [K.ABLATE, K.SHOCK])
 	gun.strikes = 3
@@ -2870,8 +2873,8 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	assert_eq(Effects.paradox(m), [1, 6] as Array[int], "a stack a debuff stack, six to trip")
-	assert_eq(sk.paradox_count(), 6, "the team's count")
+	assert_eq(Effects.paradox(m), [1, count] as Array[int], "a stack a debuff stack, Paradox's own count to trip")
+	assert_eq(sk.paradox_count(), count, "the team's count")
 	sk.assign(0, g)
 	assert_eq(Effects.stacks_of(g, "paradox"), 4, "three strikes of Ablate 1 are three stacks and the Shock a fourth (11 November: a stack a stack)")
 	assert_false(g.is_suppressed(), "not yet")
@@ -2879,8 +2882,8 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	assert_eq(Effects.stacks_of(g, "paradox"), 4, "Paradox never feeds itself")
 	sk._foe_gained_status(g, "numbed")
 	assert_eq(Effects.stacks_of(g, "paradox"), 4, "nor Numbed, the foe's own buff")
-	sk._foe_gained_status(g, "ablating", 2)
-	assert_true(g.is_suppressed(), "six trips it: its past self knocks it out")
+	sk._foe_gained_status(g, "ablating", count - 4)
+	assert_true(g.is_suppressed(), "the count trips it: its past self knocks it out")
 	assert_eq(Effects.stacks_of(g, "paradox"), 0, "the Paradox clears, and the Suppressed it caused added none")
 	assert_eq(Effects.stacks_of(g, "numbed"), 0, "Numbed lands as it recovers, not as the stun does")
 	assert_true("\n".join(sk.log).contains("trapped in a paradox"), "the log says so")
@@ -2907,7 +2910,7 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	assert_true(g2.is_suppressed(), "the weapon's suppress landed")
 	assert_eq(Effects.stacks_of(g2, "paradox"), 1, "and it counts as a status gained")
 	Effects.remove(g2, "numbed")   # no resistance, so the trip is certain
-	s2._foe_gained_status(g2, "ablating", 4)
+	s2._foe_gained_status(g2, "ablating", count - 2)
 	s2._foe_gained_status(g2, "shocked")
 	assert_eq(Effects.stacks_of(g2, "paradox"), 0, "tripped, and the meter is spent on a foe already suppressed")
 	assert_true("\n".join(s2.log).contains("already suppressed"), "the trip was wasted on it")
@@ -2928,8 +2931,7 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	s3.start_round()
 	s3.assign(0, g3)
 	assert_eq(Effects.stacks_of(g3, "paradox"), 3, "Ablate 1 deepened to two stacks, two Paradox, deepened to three")
-	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "paradox", "value": 3}).begins_with("a foe gains a Paradox stack for every stack of another debuff it gains; at 3 or more every stack is consumed and it is Suppressed"), "reads as a sentence")
-
+	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "paradox"}).begins_with("a foe gains a Paradox stack for every stack of another debuff it gains; at %d or more every stack is consumed and it is Suppressed" % count), "reads as a sentence, at Paradox's own count")
 
 ## A foe carrying a status (the Susceptibility Tensor's condition, 10 October) means what the
 ## team put on it: never Numbed, a resistance, and never the foe's own buffs.
