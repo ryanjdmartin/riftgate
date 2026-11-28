@@ -5,7 +5,7 @@
 The session designs Ryan's White Rhino, the lure tank of his 4-4-2: "THE tier-1 tank option, with
 Storm Petrel a close second." Its kit is decided (25 to 27 November, the bible's White Rhino row)
 and planned in content (`white_rhino`, its lock `polarity_inversion_field`, the terms `invert`,
-`inverted_polarity` and `rhino_drone`), so what is left is its look and its Drone's model, the two names, and its
+`inverted_polarity` and `rhino_drone`), so what is left is its look and its Drone's model, the Drone's name, and its
 branches. The rounds that reached the kit (the cage, the hold, the bar, the price, the ideas past
 his four, the split and the trigger) stand in git at `536f3d70`.
 
@@ -62,11 +62,29 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
   that would cause the field to isolate the two while they're connected. Whether that's
   physically or through some shared attribute that would make them, I guess, unaffected by
   others."
+- 28 November, the first looks: "A and C are best starting shapes but they're all pretty rough. C
+  at least looks like it could take a hit, but it's otherwise very plain. A has visual interest
+  but looks flimsy, it has humvee heritage. The Polarity field emitter...thing should be a
+  defining feature but all 3 of them look tacked on there...like a horn. There's no reason for it
+  to be where it is, and when it's the entire identity, it needs to make an impact on the
+  silhouette. Also gun placements on A and B don't work, at all. And the drone needs a real dock,
+  it's an extension of the chassis so it should have a real home to either dock into, connect to,
+  or a shielded bay to eject out of, or anything like that. Another defining feature that's
+  getting missed."
+- 28 November, the Drone and the roots: "The tandem drone needs refining. It's very crude and
+  flimsy looking. I'm imagining, lore -wise, that this unit has something like SWAT roots (or the
+  future-tech equivalent), a versatile vehicle designed for isolating and neutralizing a severe
+  threat with its kit working in tandem, or tactical support through being able to hold a line
+  and handle distant threats with the drone simultaneously, or even riot control and the like. So
+  with that, the drone needs to look rugged and durable enough to endure in a combat situation,
+  too. So maybe even the tandem rotor isn't really cutting it for what the silhouette needs to
+  be." And its name: "I don't love "class" since that sounds like a vehicle and not a drone, so
+  I'll take suggestions."
 
 ## The kit, decided
 
-- **The Drone**, its passive, the Askari-class Enforcement Drone, the Enforcer in gameplay text (his
-  names): every weapon it uses on a Sprite moves the Enforcer to that use's target. Draft: "Resolve: If a weapon was used on a Sprite, move the Enforcer to the
+- **The Drone**, its passive, the Enforcer in gameplay text (his; its full name is open, the
+  content still holding his "Askari-class Enforcement Drone" of 27 November): every weapon it uses on a Sprite moves the Enforcer to that use's target. Draft: "Resolve: If a weapon was used on a Sprite, move the Enforcer to the
   target."
 - **The lock**, its Integrated equipment, the Polarity Inversion Field (his name): a field that
   isolates the White Rhino and one Sprite while they are joined, thrown from a projector that is
@@ -91,42 +109,52 @@ having no big hitter to take. With half damage the lock is safe enough that hook
 shows does better than waiting a round for the Drone, so the set-up is the stun's, not the
 lock's safety.
 
-## The look round (27 November): three half-tracks and the Drone
+## The look rounds
 
-His: "I think we should try a half-track for this one, it's not a silhouette we have yet, right?
-I can't tell looks without seeing them, so I'll need mock ups." No machine is a half-track (the
-Echidna's look round drew one on 15 November and he took the armoured car), and the engine moves
-five ways (tracked, walker, wheeled, hover, flyer), so the White Rhino is tracked for the rules
-and a half-track to look at. The sheet is `docs/looks/minerva_white_rhino.png`, built by
-`tools/lowforge/looks/rhino_looks.py` (`$BPY_PYTHON tools/lowforge/looks/sheet.py rhino_looks`):
-blockouts for proportion and placement, not detail.
+A half-track, his of 27 November ("it's not a silhouette we have yet, right?"): no machine is one,
+and the engine moves five ways (tracked, walker, wheeled, hover, flyer), so the White Rhino is
+tracked for the rules and a half-track to look at. `tools/lowforge/looks/rhino_looks.py` builds
+every round (`$BPY_PYTHON tools/lowforge/looks/sheet.py rhino_looks --sheet SHEET4`): blockouts
+for proportion and placement, each wearing its stock's three classes as placeholders.
 
-Every look carries the kit the same way: steered wheels forward under armoured wings, a track
-unit under each side of the rear body, the lock's projector where a horn would stand (blunt and
-squared, coil collars down it, a lit tip for its field), and the Drone on a cradle on top, where
-an oxpecker rides. Minerva's steel and green; the white is in the name. Each wears its stock's
-three classes as placeholders.
+**Round one** (27 November; `docs/looks/minerva_white_rhino.png`, `2` the twinned fans, `3` the
+tandem on each): A the long head, B the shoulder, C the low ram, the projector a horn on each and
+the Drone on a cradle. His read of 28 November is above: A and C the shapes to start from, the
+emitter tacked on, the guns of A and B without a field of fire, no real dock, the Drone flimsy.
 
-- **A, the long head.** A long armoured bonnet over the front axle, the projector off its tip
-  angled up and forward; the cab the high point, broad-shouldered, with the Drone on its roof
-  behind the brow; the gun on a ring on the lower rear deck.
-- **B, the shoulder.** A short bonnet and a high armoured hump over the cab, the projector on the
-  hump's brow, the Drone on the hump's crest behind it; the gun on the rear deck.
-- **C, the low ram.** The cab forward over the wheels with a flat armoured face, the projector low
-  between the wheels like a ram, a tall boxy body behind with overlapping skirts down the tracks,
-  the Drone on a post at the rear corner.
-- **The Drone.** A ducted fan in a hollow green ring, a pod hung under it with a lit lens and a
-  stun prong at the nose, a small tail fin, two grip legs to perch on a Sprite.
+**Round two** (28 November; `docs/looks/minerva_white_rhino4.png`): each hull is built round its
+emitter, each gun has the road ahead clear, each Drone has a home in the hull, and each Drone is
+an armoured body with its fans sunk in it.
+
+- **D, the yoke** (from C). The hull's front is a horseshoe magnet: two armoured pole arms reach
+  forward over the front wheels, coil windings round their roots, lit shoes on their tips and lit
+  strips down their inner faces, a lit core in the throat between them; the cab looks down the
+  gap. The gun ring is forward on the roof and fires down the gap. The Drone lives in a shielded
+  bay sunk in the rear roof, its two lids stood open.
+- **E, the turret** (from A, armoured: boxed wheel housings, a blunt bonnet, a push bar). The
+  emitter is its turret, where a riot vehicle carries its cannon: a coil drum on trunnions over
+  the cab, flaring to a lit dish. The Drone rides a saddle on the turret's bustle, so the two turn
+  as one head. The gun and the rack are on the front housings, a bare mount on the bonnet.
+- **F, the plates** (from C). Two great raked plates stand down the rear deck, the field's two
+  poles, coil bands round them, lit under their caps and up their leading edges; the Drone docks
+  in the trench between them on a pad, a charging arm from each plate. The gun ring is on the
+  cab's roof ahead of them.
+- **The Enforcer, three bodies.** The brick: two fan wells in tandem sunk in one armoured lozenge
+  (the tandem made solid). The shield: four wells in a slab behind a broad front plate. The drum:
+  one well in a deep armoured drum under a roll cage, on four stout legs. Each has a guard over
+  its fans, a chin sensor with a lit lens, and a two-pronged stun fork. On the sheet D carries
+  the brick, E the drum and F the shield; any body fits any dock.
 
 ## Open for the session
 
-1. The look: A, B or C on the sheet, or his.
-2. The Drone's look: twinned fans in tandem, his lean ("I kind of like the tandem cause it's
-   different"); the third sheet shows it on each look, no stand under it.
-3. Name clashes wait on the component audit (his: "We'll audit the components after, since the
+1. The look: D, E or F on round two's sheet, a mix of their parts, or his.
+2. The Enforcer's body: the brick, the shield or the drum, or his.
+3. The Drone's full name, without "class" (his of 28 November); Enforcer stands in gameplay text.
+4. The designation, a session's draft from the roots he named: "TI-36W Threat Isolation Carrier".
+5. Name clashes wait on the component audit (his: "We'll audit the components after, since the
    chassis texts should get first pick").
-4. Its branches, for tier two.
-5. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
+6. Its branches, for tier two.
+7. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
 
 ## What the session hands back
 

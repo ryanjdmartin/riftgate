@@ -532,7 +532,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's White Rhino, its kit decided and planned in content on 27 November, the
-   bible's row: his pick of a look next; an Aphelion tier one), Claude's first rounds on his directions
+   bible's row: his pick of a look next, round two's sheet of 28 November in its brief; an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
 3. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
    block, his marks on the flanks' second patrols, the stock
