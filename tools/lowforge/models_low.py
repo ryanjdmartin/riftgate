@@ -3669,9 +3669,10 @@ def _cottonmouth_prisms(b, specs, material, label):
     return b._finish(bm, material, label)
 
 
-def _cottonmouth_ring(b, cx, cz, y0, y1, r_out, r_in, n, material, label, phase=0.0):
+def _cottonmouth_ring(b, cx, cz, y0, y1, r_out, r_in, n, material, label, phase=0.0, frame=None):
     """A closed ring about an axis along y from `y0` to `y1`: its outer and inner walls and
-    both end faces, so a duct or a muzzle reads as a thick-walled hoop from either end."""
+    both end faces, so a duct or a muzzle reads as a thick-walled hoop from either end; `frame`
+    maps its tiles in its own axes (Build._finish)."""
     bm = bmesh.new()
     ring = lambda y, r: [bm.verts.new((cx + r * math.cos(phase + 2.0 * math.pi * k / n), y, cz + r * math.sin(phase + 2.0 * math.pi * k / n))) for k in range(n)]
     o0, o1, i1, i0 = ring(y0, r_out), ring(y1, r_out), ring(y1, r_in), ring(y0, r_in)
@@ -3681,7 +3682,7 @@ def _cottonmouth_ring(b, cx, cz, y0, y1, r_out, r_in, n, material, label, phase=
         bm.faces.new([o1[k], o1[k2], i1[k2], i1[k]])
         bm.faces.new([i1[k], i1[k2], i0[k2], i0[k]])
         bm.faces.new([i0[k], i0[k2], o0[k2], o0[k]])
-    return b._finish(bm, material, label)
+    return b._finish(bm, material, label, frame=frame)
 
 
 def _cottonmouth_boxes(b, boxes, material, label):
@@ -3816,6 +3817,17 @@ def cottonmouth(b):
     angles = [math.pi / 2.0 + k * math.radians(CHAMBER) for k in range(BARRELS)]   # a barrel on top at rest, and at every step of a chamber
     y0, y1, ym = PY + 10.0, PY + 21.0, PY + 27.5   # the barrels from the casing's face, the muzzles, their mouths
     yb, cr = PY - 7.0, 6.6                         # the drum's back and its chambers' circle there
+    # The drum's front wears its tiles about itself (Ryan, 27 November: "the barrel spacing might be
+    # ok but it looks very off because the panel line texture is very off, causing an illusion"):
+    # the world grid's panel lines crossed its face at its axis, a cross no five barrels match.
+    # Each barrel's tile sits about its own axis, its panel lines half a tile out (outside it) and
+    # its ring line under the front collar, so the five wear it alike; the collars and the hub wear
+    # one tile wider than the collars, its lines outside them and between the two.
+    Y_, X_, Z_ = Vector((0.0, 1.0, 0.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 0.0, 1.0))
+    barrel_frame = lambda bx, bz: (Vector((bx - TILE_WORLD / 2.0, y1 + 1.6 - TILE_WORLD, bz - TILE_WORLD / 2.0)), Y_, X_, Z_, (TILE_WORLD, TILE_WORLD))
+    DRUM_TILE = 24.0                               # wider than the collars (RR + RB + 0.5 across each way)
+    y_gap = (y0 + 3.6 + y1 + 1.6) / 2.0             # midway between the two collars: the drum tile's one line along it
+    drum_frame = (Vector((-DRUM_TILE / 2.0, y_gap, ZA - DRUM_TILE / 2.0)), Y_, X_, Z_, (DRUM_TILE, DRUM_TILE))
     with b.joint("elev_drum", (0.0, PY, ZA), axis="pitch", limits=(0.0, 30.0)):
         with b.joint("drum", (0.0, PY, ZA), axis="roll"):
             # The breech casing: chamfered at its back so the drum lifts clear of the deck.
@@ -3837,17 +3849,17 @@ def cottonmouth(b):
             # bore's floor dark and never lit (a shot lights the top mouth, below).
             for a in angles:
                 bx, bz = RR * math.cos(a), ZA + RR * math.sin(a)
-                b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8)
-                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "steel.dark", "muzzle", phase=math.pi / 8)
+                b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8, frame=barrel_frame(bx, bz))
+                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "steel.dark", "muzzle", phase=math.pi / 8, frame=barrel_frame(bx, bz))
             _cottonmouth_prisms(b, [("y", (RR * math.cos(a), ym - 1.8, ZA + RR * math.sin(a)), RB - 0.95, 0.4, 8, math.pi / 8) for a in angles], "bore.dark", "bore_floor")
             # The spindle ends at the front collar under a pointed hub, the fans' spinner's shape, filling
             # the pocket the barrels' mouths ring, so no barrel-wide hole or flat cap stands among them
             # (Ryan, 27 November: run out to the mouths under a flat cap, it read as a sixth barrel).
             yf = y1 + 1.6 + 1.1   # the front collar's face
             b.prism("y", 0.0, (y0 + yf) / 2.0, ZA, 2.3, yf - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
-            b.loft([(yf, _oct(ZA, 6.6, 6.6, 0.0, 10)), (ym - 0.5, _oct(ZA, 1.2, 1.2, 0.0, 10))], "steel.plate", "spindle_cap")
+            b.loft([(yf, _oct(ZA, 6.6, 6.6, 0.0, 10)), (ym - 0.5, _oct(ZA, 1.2, 1.2, 0.0, 10))], "steel.plate", "spindle_cap", frame=drum_frame)
             for yc in (y0 + 3.6, y1 + 1.6):
-                b.prism("y", 0.0, yc, ZA, RR + RB + 0.5, 2.2, "steel.plate", 12, "collar", phase=math.pi / 12)
+                b.prism("y", 0.0, yc, ZA, RR + RB + 0.5, 2.2, "steel.plate", 12, "collar", phase=math.pi / 12, frame=drum_frame)
         # The shot's light, fixed at the top chamber on the elevation (never the rolling drum):
         # the top mouth rests hidden in the collar's solid and the top lamp inside the casing;
         # while the drum stands parked for a shot each slides into the top chamber (forward into

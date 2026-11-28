@@ -581,9 +581,10 @@ class Build:
         self.objects.append(ob)
         return ob
 
-    def loft(self, sections, material, label="part", transform=None, cap=True):
+    def loft(self, sections, material, label="part", transform=None, cap=True, frame=None):
         """Sections: [(y, [(x, z), ...]), ...] with the same point count, ordered along y. A
-        part wearing the exhaust tile has a whole tile fitted to each of its caps."""
+        part wearing the exhaust tile has a whole tile fitted to each of its caps. `frame`
+        maps its tiles in its own axes (_finish), in place of the world grid."""
         bm = bmesh.new()
         rings = []
         for y, pts in sections:
@@ -604,14 +605,15 @@ class Build:
                         bm.faces.new(ring)
                     except ValueError:
                         pass
-        fit = 1 if material.partition(".")[2] == "exhaust" and transform is None else None
-        return self._finish(bm, material, label, transform, fit_axis=fit)
+        fit = 1 if material.partition(".")[2] == "exhaust" and transform is None and frame is None else None
+        return self._finish(bm, material, label, transform, frame=frame, fit_axis=fit)
 
     def box(self, x0, x1, y0, y1, z0, z1, material, label="box", transform=None):
         return self.loft([(y0, rect((x0 + x1) / 2, x1 - x0, z0, z1)), (y1, rect((x0 + x1) / 2, x1 - x0, z0, z1))], material, label, transform)
 
-    def prism(self, axis, cx, cy, cz, radius, length, material, sides=6, label="prism", phase=0.0):
-        """A low-count cylinder along an axis: six sides is the register's barrel."""
+    def prism(self, axis, cx, cy, cz, radius, length, material, sides=6, label="prism", phase=0.0, frame=None):
+        """A low-count cylinder along an axis: six sides is the register's barrel. `frame` as
+        loft's."""
         pts = []
         for i in range(sides):
             a = phase + i * 2.0 * math.pi / sides
@@ -623,7 +625,7 @@ class Build:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(math.pi / 2, 4, "Z")
         else:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
-        return self.loft(sections, material, label, m)
+        return self.loft(sections, material, label, m, frame=frame)
 
     def cut(self, targets, p0, p1, radius, sides=8, phase=0.0, section=None):
         """A hole: a cylinder from `p0` to `p1` subtracted from every object in `targets`
